@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>database</type>
+		<description>Language labels for database tables/fields belonging to extension 'content_designer'</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="sheet_general">General</label>
+			
+			<label index="mediajs_mediatype">Type</label>
+			<label index="mediajs_select">Please select...</label>
+			<label index="mediajs_subtitle">Subtitle</label>
+			<label index="mediajs_audiofile">Audiofile</label>
+			<label index="mediajs_videofile">Videofile</label>
+			<label index="mediajs_url">URL</label>
+			
+			<label index="google_street">Street / Nr.</label>
+			<label index="google_city">City</label>
+			<label index="google_zoom">Zoom (Default: 14)</label>
+			<label index="google_disableBigView">Disable Link to bigger view</label>
+			
+			<label index="googlestatic_title">Map Image</label>
+			<label index="googlestatic_description">Image of a Google Map Position</label>
+			
+			<label index="googlemaps_title">Interactive Map</label>
+			<label index="googlemaps_description">Integrates Google Maps</label>
+			
+			<label index="youtube_title">YouTube</label>
+			<label index="youtube_description">Insert a YouTube Video</label>
+			<label index="youtube_starttime">Starttime (in seconds)</label>
+			
+			<label index="gallery_title">Image-Gallery</label>
+			<label index="gallery_description">Insert an Image Gallery of Files or Folders</label>
+			<label index="gallery_previmage">Preview Image</label>
+			<label index="gallery_descriptiontext">Description</label>
+			<label index="gallery_imageset">Images (Press save before you add)</label>
+			<label index="gallery_show">Show</label>
+			<label index="gallery_back">Back to overview</label>
+		</languageKey>
+		
+		<languageKey index="de" type="array">
+			<label index="sheet_general">Allgemein</label>
+			
+			<label index="mediajs_mediatype">Medientyp</label>
+			<label index="mediajs_select"><![CDATA[Bitte ausw&auml;hlen...]]></label>
+			<label index="mediajs_subtitle">Untertitel</label>
+			<label index="mediajs_audiofile">Audio-Datei</label>
+			<label index="mediajs_videofile">Video-Datei</label>
+			<label index="mediajs_url">URL</label>
+			
+			<label index="google_street">Strasse / Nr.</label>
+			<label index="google_city">Ort</label>
+			<label index="google_zoom">Zoom (Standard: 14)</label>
+			<label index="google_disableBigView">Link zur Großansicht deaktivieren</label>
+			
+			<label index="googlestatic_title">Kartenbild</label>
+			<label index="googlestatic_description">Bild mit Position auf einer Google Karte</label>
+			
+			<label index="googlemaps_title">Interaktive Karte</label>
+			<label index="googlemaps_description">Integriert Google Maps</label>
+			
+			<label index="youtube_title">YouTube</label>
+			<label index="youtube_description"><![CDATA[Einfügen eines YouTube Videos]]></label>
+			<label index="youtube_starttime">Startzeit (in Sekunden)</label>
+			
+			<label index="gallery_title">Bildergallerie</label>
+			<label index="gallery_description">Einfügen einer Bildergallerie mit Dateien oder Ordnern</label>
+			<label index="gallery_descriptiontext">Beschreibung</label>
+			<label index="gallery_previmage">Vorschaubild</label>
+			<label index="gallery_imageset"><![CDATA[Bildersammlung (Speichern drücken, vor dem hinzufügen!)]]></label>
+			<label index="gallery_show">Anzeigen</label>
+			<label index="gallery_back"><![CDATA[Zurück zur Übersicht]]></label>
+		</languageKey>
+	</data>
+</T3locallang>
