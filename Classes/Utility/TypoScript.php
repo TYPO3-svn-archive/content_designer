@@ -5,13 +5,15 @@ namespace KERN23\ContentDesigner\Utility;
 class TypoScript {
 	
 	/**
-     * Lädt die Typoscript konfiguration für das plugin / extension
-     *
-     * @param array $config
-	 * @param string $prefixId
-	 * @param integer $pageUid
-     * @return array
-     */
+    * Lädt die Typoscript konfiguration für das plugin / extension
+    *
+    * @param array $config
+	  * @param string $prefixId
+	  * @param integer $pageUid
+		* @param string $firstTsLevel
+		* @param boolean $noPageUidSubmit
+    * @return array
+    */
 	public static function loadConfig(&$config, $prefixId, $pageUid = 0, $firstTsLevel = 'tt_content.', $noPageUidSubmit = FALSE) {
 		$arr_list = self::loadTS($config, $pageUid, $noPageUidSubmit);
 		if ( !is_array($arr_list) || (sizeof($arr_list) <= 0) || !is_array($arr_list[$firstTsLevel]) ) return $config;
@@ -29,7 +31,8 @@ class TypoScript {
      * Load the TypoScript Conf Array in the Backend
      *
      * @param array $conf
-	 * @param integer $pageUid
+	   * @param integer $pageUid
+		 * @param boolean $noPageUidSubmit
      * @return array
      */
 	public static function loadTS(&$conf, $pageUid = 0, $noPageUidSubmit = FALSE) {
@@ -110,7 +113,7 @@ class TypoScript {
 		
 		// Try to get the current page id to load the TS Setup from it
 		if ( intval($pageUid) > 0 )                             $pid = intval($pageUid);
-		if ( empty($pid) && (intval($conf['row']['pid']) > 0) ) $pid = intval($conf['row']['pid']);
+		//if ( empty($pid) && (intval($conf['row']['pid']) > 0) ) $pid = intval($conf['row']['pid']);
 		if ( empty($pid) && isset($_GET['edit']) && is_array($_GET['edit']['pages']) ) {
 			$tmp = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('edit');
 			$pid = key($tmp['pages']);
@@ -124,6 +127,8 @@ class TypoScript {
 			
 			$pid   = $ce['pid'];
 		}
+		if ( empty($pid) && ($_GET['CB']['paste']) ) $pid = intval(preg_replace("/^.*\|([0-9]{1,})$/i","$1",$_GET['CB']['paste'],1)); # Get the pid in exlicitAllow Mode on paste
+		if ( empty($pid) && ($_GET['redirect']) )    $pid = intval(preg_replace("/^.*id=([0-9]{1,}).*$/i","$1",$_GET['redirect'],1)); # Get the pid in explicitAllow Mode on delete
 		if ( empty($pid) ) return FALSE;
 		
 		return $pid;

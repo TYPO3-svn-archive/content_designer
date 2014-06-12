@@ -40,14 +40,10 @@ class DrawItem implements \TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHookInte
 	 * @return	void
 	 */
 	private function disableDragDrop(\TYPO3\CMS\Backend\View\PageLayoutView &$parentObject, &$drawItem, &$headerContent, &$itemContent, array &$row) {
-		$pageUid         = $parentObject->pageRecord['uid'];
-		$pageTSconfigStr = $parentObject->pageRecord['TSconfig'];
-		$tsParser        = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Configuration\\TsConfigParser');
-		$TSconfig        = $tsParser->parseTSconfig($pageTSconfigStr, 'PAGES', $pageUid);
-		unset($pageUid, $pageTSconfigStr, $tsParser);
+		$TSconfig = \TYPO3\CMS\Backend\Utility\BackendUtility::getPagesTSconfig($parentObject->pageRecord['uid']);
 		
-		if ( sizeof($TSconfig['TSconfig']['TCEFORM.']['disableDragDrop.']['CType.']) > 0 ) {
-			foreach ( $TSconfig['TSconfig']['TCEFORM.']['disableDragDrop.']['CType.'] as $CType => $colList ) {
+		if ( sizeof($TSconfig['TCEFORM.']['disableDragDrop.']['CType.']) > 0 ) {
+			foreach ( $TSconfig['TCEFORM.']['disableDragDrop.']['CType.'] as $CType => $colList ) {
 				if ( $CType == $row['CType'] ) $headerContent = '<span class="disableDragDrop" data-uid="'.$row['uid'].'" data-cols="'.$colList.'"></span>'.$headerContent;
 			}
 		} else return FALSE;

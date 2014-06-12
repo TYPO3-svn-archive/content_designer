@@ -102,8 +102,8 @@ class extTables {
 	 * @return void
 	 */
 	public function renderPageItems(&$cdItems) {
-		// we have grid elements to add
-		if(count($cdItems)) {
+		// do we have something to add?
+		if( is_array($cdItems) && count($cdItems['tx_contentdesigner_flexform.']['settings.']['cObject.']) ) {
 			$cdItem = &$cdItems['tx_contentdesigner_flexform.']['settings.'];
 			
 			\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('pages', $cdItem['tca'], '', '');
