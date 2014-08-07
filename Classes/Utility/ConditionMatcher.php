@@ -15,7 +15,7 @@ class ConditionMatcher {
      * @return bool
      */
 	public static function evaluateCondition($string) {
-		if ( !$_GET['edit']['tt_content'] ) return true;
+		if ( !$_GET['edit']['tt_content'] ) return;
 		
 		if ( strstr($string,">=") ) {
 			list($key, $whereValue)  = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode('>=', $string, FALSE, 2);
