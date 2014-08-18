@@ -34,54 +34,54 @@ namespace KERN23\ContentDesigner\Controller;
  */
 class ContentRendererController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
     
-    /**
-     * Shows a single item
-     *
-     *
-     * @return void
-     */
-    public function showAction() {
+	/**
+	 * Shows a single item
+	 *
+	 *
+	 * @return void
+	 */
+	public function showAction() {
 		// Modifies the Render Object
 		$this->cleanRenderObj($this->settings);
-		
+
 		// Flex Data laden
 		$cObjAr = $this->settings['flexform'];
-		
+
 		// Extra Felder laden
 		if ( sizeof($this->settings['cObjectStaticData.']) > 0 ) {
 			foreach ( $this->settings['cObjectStaticData.'] as $key => $val ) {
 				$cObjAr[$key] = $val;
 			}
 		}
-		
+
 		// Content Object laden
 		$this->cObj = $this->configurationManager->getContentObject(); // Die original Daten zwischen speichern
-		
+
 		// Content Data laden
 		$data = $this->cObj->data;
-		
+
 		// Daten mergen
 		if ( is_array($cObjAr) ) {
 			$this->cObj->start(array_merge($data, $cObjAr));
 		} else $this->cObj->start($data);
-		
+
 		// Ausfuehren
 		$itemContent = \KERN23\ContentDesigner\Utility\TypoScript::parseTypoScriptObj($this->settings['renderObj'], $this->settings['renderObj.'], $this->cObj);
-		
+
 		// Zurücksetzen
 		$this->cObj->start($data, 'tt_content'); // Reset des CURRENT Wert damit die Content ID wieder eingefuegt werden kann
-		
+
 		// Liefern
 		return $itemContent;
-    }
+	}
 	
 	/**
-     * Normalize the Config Array
-     *
-     *
+	 * Normalize the Config Array
+	 *
+	 *
 	 * @param array $settings
-     * @return void
-     */
+	 * @return void
+	 */
 	private function cleanRenderObj(&$settings) {
 		$this->settings['renderObj.'] = $this->settings['renderObj'];
 		$this->settings['renderObj'] = $this->settings['renderObj']['_typoScriptNodeValue'];
