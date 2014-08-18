@@ -34,13 +34,13 @@ namespace KERN23\ContentDesigner\Controller;
  */
 class ContentRendererController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
     
-    /**
-     * Shows a single item
-     *
-     *
-     * @return void
-     */
-    public function showAction() {
+  /**
+   * Shows a single item
+   *
+   *
+   * @return void
+   */
+  public function showAction() {
 		// Modifies the Render Object
 		$this->cleanRenderObj($this->settings);
 		
@@ -73,15 +73,15 @@ class ContentRendererController extends \TYPO3\CMS\Extbase\Mvc\Controller\Action
 		
 		// Liefern
 		return $itemContent;
-    }
+  }
 	
 	/**
-     * Normalize the Config Array
-     *
-     *
+   * Normalize the Config Array
+   *
+   *
 	 * @param array $settings
-     * @return void
-     */
+   * @return void
+   */
 	private function cleanRenderObj(&$settings) {
 		$this->settings['renderObj.'] = $this->settings['renderObj'];
 		$this->settings['renderObj'] = $this->settings['renderObj']['_typoScriptNodeValue'];
