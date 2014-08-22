@@ -1,5 +1,0 @@
-config.tx_extbase {
-   objects {
-      TYPO3\CMS\Backend\Form\DataPreprocessor.className = KERN23\ContentDesigner\Hooks\DataPreprocessor
-   }
-}

@@ -5,15 +5,33 @@ namespace KERN23\ContentDesigner\Utility;
 class TypoScript {
 	
 	/**
-    * Lädt die Typoscript konfiguration für das plugin / extension
-    *
-    * @param array $config
-	  * @param string $prefixId
-	  * @param integer $pageUid
-		* @param string $firstTsLevel
-		* @param boolean $noPageUidSubmit
-    * @return array
-    */
+	 * Returns the elements from anywhere ignoring the page ID
+	 *
+	 * @return array
+	 */
+	public static function getFromAnywhere($prefixId = 'tx_contentdesigner_', $firstTsLevel = 'tt_content.') {
+		$cm      = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager');
+		$tsSetup = $cm->getTypoScriptSetup();
+		
+		foreach ( array_keys($tsSetup[$firstTsLevel]) as $key ) {
+			if ( preg_match('/^'.$prefixId.'(.*)\.$/i',$key,$match) ) {
+				$retAr[$prefixId.$match[1]] = $tsSetup[$firstTsLevel][$key];
+			}
+		}
+		
+		return $retAr;
+	}
+	
+	/**
+     * Lädt die Typoscript konfiguration für das plugin / extension
+     *
+     * @param array $config
+	 * @param string $prefixId
+	 * @param integer $pageUid
+	 * @param string $firstTsLevel
+	 * @param boolean $noPageUidSubmit
+     * @return array
+     */
 	public static function loadConfig(&$config, $prefixId, $pageUid = 0, $firstTsLevel = 'tt_content.', $noPageUidSubmit = FALSE) {
 		$arr_list = self::loadTS($config, $pageUid, $noPageUidSubmit);
 		if ( !is_array($arr_list) || (sizeof($arr_list) <= 0) || !is_array($arr_list[$firstTsLevel]) ) return $config;
@@ -31,8 +49,8 @@ class TypoScript {
      * Load the TypoScript Conf Array in the Backend
      *
      * @param array $conf
-	   * @param integer $pageUid
-		 * @param boolean $noPageUidSubmit
+	 * @param integer $pageUid
+	 * @param boolean $noPageUidSubmit
      * @return array
      */
 	public static function loadTS(&$conf, $pageUid = 0, $noPageUidSubmit = FALSE) {
