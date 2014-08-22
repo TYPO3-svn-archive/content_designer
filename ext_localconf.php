@@ -33,6 +33,9 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php'][
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\\Backend\\Form\\DataPreprocessor'] = array(
 	'className' => 'KERN23\\ContentDesigner\\Xclass\\DataPreprocessor',
 );
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\\Backend\\Form\\FormEngine'] = array(
+	'className' => 'KERN23\\ContentDesigner\\Xclass\\FormEngine',
+);
 
 // TSconfig Condition userFunc
 if ( !function_exists(user_cdTSconfig) ) {
