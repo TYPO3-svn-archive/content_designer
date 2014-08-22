@@ -27,9 +27,12 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php'][
 	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'Classes/Hooks/PageRenderer.php:KERN23\\ContentDesigner\\Hooks\\PageRenderer->addJSCSS';
 
 // Explicit Allow Hook (if explicitADmode is on explicitAllow)
-if ( $TYPO3_CONF_VARS['BE']['explicitADmode'] == 'explicitAllow' ) {
+/*if ( $TYPO3_CONF_VARS['BE']['explicitADmode'] == 'explicitAllow' ) {
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_userauthgroup.php']['fetchGroups_postProcessing'][] = 'EXT:content_designer/Classes/Hooks/BackendUserAuthentication.php:KERN23\\ContentDesigner\\Hooks\\BackendUserAuthentication->fetchGroups_postProcessing';
-}
+}*/
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\\Backend\\Form\\DataPreprocessor'] = array(
+	'className' => 'KERN23\\ContentDesigner\\Xclass\\DataPreprocessor',
+);
 
 // TSconfig Condition userFunc
 if ( !function_exists(user_cdTSconfig) ) {
