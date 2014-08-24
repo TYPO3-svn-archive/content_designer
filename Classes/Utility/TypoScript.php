@@ -7,15 +7,24 @@ class TypoScript {
 	/**
 	 * Returns the elements from anywhere ignoring the page ID
 	 *
+	 * @param string $firstTsLevel
+	 * @param string $prefixId
+	 * @param bool $includeAdditionalNames
 	 * @return array
 	 */
-	public static function getFromAnywhere($prefixId = 'tx_contentdesigner_', $firstTsLevel = 'tt_content.') {
+	public static function getFromAnywhere($firstTsLevel = 'tt_content.', $prefixId = 'tx_contentdesigner_', $includeAdditionalNames = FALSE) {
 		$cm      = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager');
 		$tsSetup = $cm->getTypoScriptSetup();
 		
 		foreach ( array_keys($tsSetup[$firstTsLevel]) as $key ) {
 			if ( preg_match('/^'.$prefixId.'(.*)\.$/i',$key,$match) ) {
 				$retAr[$prefixId.$match[1]] = $tsSetup[$firstTsLevel][$key];
+			}
+		}
+		
+		if ( ($includeAdditionalNames == TRUE) && is_array($tsSetup['module.']['tx_contentdesigner.']['manualExplicitAllowDeny.']) ) {
+			foreach ( array_keys($tsSetup['module.']['tx_contentdesigner.']['manualExplicitAllowDeny.']) as $key ) {
+				$retAr[$key]['settings.']['title'] = $tsSetup['module.']['tx_contentdesigner.']['manualExplicitAllowDeny.'][$key];
 			}
 		}
 		

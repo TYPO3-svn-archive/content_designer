@@ -8,11 +8,17 @@ namespace KERN23\ContentDesigner\Xclass;
  */
 class FormEngine extends \TYPO3\CMS\Backend\Form\FormEngine {
 	
+	private $table = '';
+	
+	public function getSelectItems($table, $fieldName, array $row, array $PA) {
+		$this->table = $table;
+		return parent::getSelectItems($table, $fieldName, $row, $PA);
+	}
+	
 	public function addSelectOptionsToItemArray($items, $fieldValue, $TSconfig, $field) {
 		$items = parent::addSelectOptionsToItemArray($items, $fieldValue, $TSconfig, $field);
 		
-		if ( (key($_GET['edit']) == 'be_groups') && ($fieldValue['config']['special'] == 'explicitValues') ) {
-			
+		if ( ($this->table == 'be_groups') && ($fieldValue['config']['special'] == 'explicitValues') ) {
 			// Get some basic values
 			list($iMode, $icons, $adLabel) = \KERN23\ContentDesigner\Utility\Helper::getFormSettings();
 			
@@ -23,7 +29,7 @@ class FormEngine extends \TYPO3\CMS\Backend\Form\FormEngine {
 			);
 			
 			// Get TypoScript
-			$cdElements = \KERN23\ContentDesigner\Utility\TypoScript::getFromAnywhere();
+			$cdElements = \KERN23\ContentDesigner\Utility\TypoScript::getFromAnywhere('tt_content.', 'tx_contentdesigner_', TRUE);
 			
 			//tt_content:CType:textpic:ALLOW|[Erlauben] Text und Bilder
 			foreach ( $cdElements as $key => $val ) {

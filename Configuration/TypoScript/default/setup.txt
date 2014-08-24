@@ -6,11 +6,7 @@ plugin.tx_contentdesigner {
 	controller = ContentRenderer
 	vendorName = KERN23
 	action = show
-	switchableControllerActions {
-		ContentRenderer {
-			1 = show
-		}
-	}
+	switchableControllerActions.ContentRenderer.1 = show
 	
 	features {
 		// uncomment the following line to enable the new Property Mapper.
@@ -28,3 +24,12 @@ plugin.tx_contentdesigner {
 }
 
 pages.tx_contentdesigner_flexform.settings.tca = --div--;LLL:EXT:cms/locallang_ttc.xml:tabs.extended,tx_contentdesigner_flexform
+
+module.tx_contentdesigner.manualExplicitAllowDeny {
+  # Example to manually add contentdesigner keys to the BE Group explicit allow/deny field list.
+  # This is usefull if you're not defining your CD Elements in the ROOT TypoScript Template and
+  # in the BE Group configuration they aren't visible
+  
+  #tx_contentdesigner_blubah = Blubber
+  #tx_contentdesigner_blahblub = Bla Blub
+}
