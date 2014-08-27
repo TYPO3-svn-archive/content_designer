@@ -10,6 +10,7 @@ if (!defined('TYPO3_MODE')) {
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript/MediaElementJS/', 'CD: MediaelementJS');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript/youtube/', 'CD: YouTube iFrame');
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript/gallery/', 'CD: Image Gallery');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile($_EXTKEY, 'Configuration/TypoScript/phpscript/', 'CD: PHP Script include');
 
 // TCA Hook
 \KERN23\ContentDesigner\Hooks\extTables::manipulateTCA('tt_content');
