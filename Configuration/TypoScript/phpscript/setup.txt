@@ -5,7 +5,7 @@ tt_content.tx_contentdesigner_phpscript.settings {
   
   cObject.sDEF.sheetTitle = Allgemein
   cObject.sDEF.el.phpscript {
-    label = Pfad/Dateiname zum PHP Script
+    label = Relative path to PHP Script
     config.type = input
     config.eval = trim,required
   }
