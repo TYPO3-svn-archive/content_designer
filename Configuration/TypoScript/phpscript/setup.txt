@@ -14,20 +14,19 @@ tt_content.tx_contentdesigner_phpscript.settings {
   previewObj.field = phpscript
   previewObj.wrap  = |<br>
   
-  renderObj >
   renderObj = COA_INT
   renderObj {
-    10 = LOAD_REGISTER
-    10.script.field = phpscript
+    20 = LOAD_REGISTER
+    20.script.field = phpscript
     
-    20 = USER
-    20.includeLibs = typo3conf/ext/content_designer/Resources/Private/includePhpScript.php
-    20.userFunc = contentdesigner_includescript->main
+    30 = USER
+    30.includeLibs = typo3conf/ext/content_designer/Resources/Private/includePhpScript.php
+    30.userFunc = contentdesigner_includescript->main
     
-    20.includeScript = TEXT
-    20.includeScript.value = {register:script}
-    20.includeScript.insertData = 1
+    30.includeScript = TEXT
+    30.includeScript.value = {register:script}
+    30.includeScript.insertData = 1
     
-    30 = RESTORE_REGISTER
+    40 = RESTORE_REGISTER
   }
 }
