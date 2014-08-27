@@ -20,7 +20,7 @@ tt_content.tx_contentdesigner_phpscript.settings {
     20.script.field = phpscript
     
     30 = USER
-    30.includeLibs = typo3conf/ext/content_designer/Resources/Private/includePhpScript.php
+    30.includeLibs = EXT:content_designer/Resources/Private/includePhpScript.php
     30.userFunc = contentdesigner_includescript->main
     
     30.includeScript = TEXT
