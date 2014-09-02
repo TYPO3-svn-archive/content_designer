@@ -77,7 +77,6 @@ class extTables {
 			
 			\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('
 				mod.wizards.newContentElement.wizardItems.cd.header = '.$label.'
-				#mod.wizards.newContentElement.wizardItems.cd.show = *
 			');
 			
 			// traverse the elements and create wizard item for each element
@@ -149,7 +148,18 @@ class extTables {
 	 * @return void
 	 */
 	public function addContentDesignerItemToCType($cdObjKey, $cdItem, $table = 'tt_content') {
-		$GLOBALS['TCA'][$table]['types'][$cdObjKey]['showitem'] = $cdItem['tca'];
+		// Set the default TCA fields by string or automaticly copy them by other code
+		if ( !empty($cdItem['tca']) ) {
+			$GLOBALS['TCA'][$table]['types'][$cdObjKey]['showitem'] = $cdItem['tca'];
+		} else {
+			if ( !is_array($GLOBALS['TCA']['tt_content']) ) \TYPO3\CMS\Core\Utility\GeneralUtility::loadTCA('tt_content');
+			
+			$type     = ( !empty($cdItem['tcaFromType']) )         ? $cdItem['tcaFromType'] : 'header';
+			$position = ( !empty($cdItem['tcaFromTypePosition']) ) ? $cdItem['tcaFromType'] : 'after:header';
+			
+			$GLOBALS['TCA'][$table]['types'][$cdObjKey]['showitem'] = $GLOBALS['TCA']['tt_content']['types'][$type]['showitem'];
+			\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('tt_content', 'pi_flexform', $cdObjKey, $position);
+		}
 		
 		if ( $cdItem['cObjectFromPlugin'] ) {
 			// Copy FlexConf from another Plugin (must be of type "plugin" eq. list)
