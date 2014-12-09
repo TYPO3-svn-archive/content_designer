@@ -14,7 +14,7 @@ tt_content.tx_contentdesigner_youtube.settings {
 	20.replacement.10 {
 		# Make it flexible
 		useRegExp = 1
-		search = /^.*[^"?].*(v=|embed\/|v\/)([^"?]+)/i
+		search = /^.*[^"?].*(v=|embed\/|v\/)([^"?&]+)/i
 		replace = $2
 	}
   }
