@@ -28,7 +28,7 @@ namespace KERN23\ContentDesigner\Controller;
 /**
  *
  *
- * @package nnhshpersonendaten
+ * @package ContentDesigner
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  *
  */

@@ -28,7 +28,7 @@ namespace KERN23\ContentDesigner\Hooks;
  * Extends dynamicly the TCA with the typoscript defined new content elements
  *
  * @author		Hendrik Reimers <kontakt@kern23.de>
- * @package		TYPO3
+ * @package		ContentDesigner
  * @subpackage	tx_contentdesigner
  */
 class extTables {
