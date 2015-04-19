@@ -38,7 +38,7 @@ class extTables {
 	 *
 	 * @return void
 	 */
-	public function manipulateTCA($table = 'tt_content') {
+	public static function manipulateTCA($table = 'tt_content') {
 		if ( \KERN23\ContentDesigner\Utility\Helper::compabilityCheck() != TRUE ) return FALSE;
 		
 		if ( $table == 'tt_content' ) {
@@ -66,7 +66,7 @@ class extTables {
 	 * @param array $cdItems
 	 * @return void
 	 */
-	public function renderItems(&$cdItems) {
+	public static function renderItems(&$cdItems) {
 		// we have grid elements to add
 		if(count($cdItems)) {
 			// Get Ext. Manager Config
@@ -100,7 +100,7 @@ class extTables {
 	 * @param array $cdItems
 	 * @return void
 	 */
-	public function renderPageItems(&$cdItems) {
+	public static function renderPageItems(&$cdItems) {
 		// do we have something to add?
 		if( is_array($cdItems) && count($cdItems['tx_contentdesigner_flexform.']['settings.']['cObject.']) ) {
 			$cdItem = &$cdItems['tx_contentdesigner_flexform.']['settings.'];
