@@ -8,15 +8,15 @@ tt_content.tx_contentdesigner_youtube.settings {
   
   previewObj = COA
   previewObj {
-	20            = TEXT
-	20.field      = url
-	20.wrap       = <p><strong>Video ID:</strong>&nbsp;|</p>
-	20.replacement.10 {
-		# Make it flexible
-		useRegExp = 1
-		search = /^.*[^"?].*(v=|embed\/|v\/)([^"?&]+)/i
-		replace = $2
-	}
+		20            = TEXT
+		20.field      = url
+		20.wrap       = <p><strong>Video ID:</strong>&nbsp;|</p>
+		20.replacement.10 {
+			# Make it flexible
+			useRegExp = 1
+			search = /^.*[^"?].*(v=|embed\/|v\/)([^"?&]+)/i
+			replace = $2
+		}
   }
   
   cObject {
@@ -38,26 +38,26 @@ tt_content.tx_contentdesigner_youtube.settings {
   renderObj {
     wrap = <div class="tx_contentdesigner_youtube">|</div>
     
-	20 = TEXT
+		20 = TEXT
     20.value = {$styles.content.imgtext.maxW}
-    20.noTrimWrap = |<iframe width="|" |
+    20.noTrimWrap = |<div class="video"><iframe width="|" |
     
     30 = TEXT
     30.value = {$styles.content.imgtext.maxW}-200
     30.prioriCalc = 1
-    30.dataWrap = height="|" frameborder="0"
+    30.dataWrap = height="|"
 	
-	40 = TEXT
-	40.field = url
-	40.noTrimWrap = | src="//www.youtube.com/embed/|" frameborder="0" allowfullscreen></iframe>|
-	40.replacement < tt_content.tx_contentdesigner_youtube.settings.previewObj.20.replacement
-	
-	# Append the Starttime
-	40.innerWrap.cObject = TEXT
-	40.innerWrap.cObject {
-		value = |?start={field:start}
-		if.isTrue.field = start
-		insertData = 1
-	}
+		40 = TEXT
+		40.field = url
+		40.noTrimWrap = | src="//www.youtube.com/embed/|" allowfullscreen></iframe></div>|
+		40.replacement < tt_content.tx_contentdesigner_youtube.settings.previewObj.20.replacement
+		
+		# Append the Starttime
+		40.innerWrap.cObject = TEXT
+		40.innerWrap.cObject {
+			value = |?start={field:start}
+			if.isTrue.field = start
+			insertData = 1
+		}
   }
 }
