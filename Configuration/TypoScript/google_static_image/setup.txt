@@ -8,14 +8,14 @@ tt_content.tx_contentdesigner_googleStaticImage.settings {
   
   previewObj = COA
   previewObj {
-	#10       = TEXT
-	#10.field = header
-	#10.wrap  = <p><strong>|</strong></p>
+	  #10       = TEXT
+	  #10.field = header
+	  #10.wrap  = <p><strong>|</strong></p>
 	
-	20            = TEXT
-	20.value      = {field:street}, {field:city}
-	20.insertData = 1
-	20.wrap       = <p>|</p>
+	  20            = TEXT
+	  20.value      = {field:street}, {field:city}
+	  20.insertData = 1
+	  20.wrap       = <p>|</p>
   }
   
   cObject {

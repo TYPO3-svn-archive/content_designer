@@ -4,6 +4,8 @@ namespace KERN23\ContentDesigner\Utility;
 
 class TypoScript {
 	
+	 private static $cache = array();
+	
 	/**
 	 * Returns the elements from anywhere ignoring the page ID
 	 *
@@ -32,16 +34,18 @@ class TypoScript {
 	}
 	
 	/**
-     * Lädt die Typoscript konfiguration für das plugin / extension
-     *
-     * @param array $config
+	 * Lädt die Typoscript konfiguration für das plugin / extension
+	 *
+	 * @param array $config
 	 * @param string $prefixId
 	 * @param integer $pageUid
 	 * @param string $firstTsLevel
 	 * @param boolean $noPageUidSubmit
-     * @return array
-     */
+	 * @return array
+	 */
 	public static function loadConfig(&$config, $prefixId, $pageUid = 0, $firstTsLevel = 'tt_content.', $noPageUidSubmit = FALSE) {
+		if ( isset(self::$cache[$pageUid]) ) return self::$cache[$pageUid];
+		
 		$arr_list = self::loadTS($config, $pageUid, $noPageUidSubmit);
 		if ( !is_array($arr_list) || (sizeof($arr_list) <= 0) || !is_array($arr_list[$firstTsLevel]) ) return $config;
 		
@@ -51,17 +55,19 @@ class TypoScript {
 			}
 		}
 		
+		self::$cache[$pageUid] = $retAr;
+		
 		return $retAr;
 	}
 
 	/**
-     * Load the TypoScript Conf Array in the Backend
-     *
-     * @param array $conf
+	 * Load the TypoScript Conf Array in the Backend
+	 *
+	 * @param array $conf
 	 * @param integer $pageUid
 	 * @param boolean $noPageUidSubmit
-     * @return array
-     */
+	 * @return array
+	 */
 	public static function loadTS(&$conf, $pageUid = 0, $noPageUidSubmit = FALSE) {
 		$pid = ( $noPageUidSubmit == FALSE ) ? self::getPid() : self::getPid($pageUid); // Fixed bug, if page properties the pid must be determined not by given pageUid
 		
@@ -80,10 +86,10 @@ class TypoScript {
 	}
 	
 	/**
-     * Inits the cObject for the Backend
-     *
-     * @return \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer
-     */
+	 * Inits the cObject for the Backend
+	 *
+	 * @return \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer
+	 */
 	public static function cObjInit() {
 		$pid = self::getPid();
 		
@@ -118,12 +124,12 @@ class TypoScript {
 	}
 	
 	/**
-     * Parsed TypoScript Objekte
-     *
+	 * Parsed TypoScript Objekte
+	 *
 	 * @param string $objType
 	 * @param array $objArray
 	 * @param \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer $cObj
-     */
+	 */
 	public static function parseTypoScriptObj($objType, $objArray, $cObj) {
 		if ( (!empty($objType)) && (sizeof($objArray) > 0) ) {
 			return $cObj->cObjGetSingle($objType,$objArray);
@@ -131,10 +137,10 @@ class TypoScript {
 	}
 	
 	/**
-     * Varios ways to get the Page ID (most needed in BE)
-     *
+	 * Varios ways to get the Page ID (most needed in BE)
+	 *
 	 * @param integer $pageUid
-     */
+	 */
 	private static function getPid($pageUid = 0) {
 		unset($pid);
 		
