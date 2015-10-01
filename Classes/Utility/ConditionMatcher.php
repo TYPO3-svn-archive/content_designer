@@ -52,7 +52,7 @@ class ConditionMatcher {
 		
 		list($uid) = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', key($_GET['edit']['tt_content']), TRUE, 1);
 		
-		$res = @$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', $table, 'uid = '.$uid.' AND '.$where);
+		$res = @$GLOBALS['TYPO3_DB']->exec_SELECTquery('uid', $table, 'uid IN ('.$uid.') AND '.$where);
 		
 		if ( ($res) && (@$GLOBALS['TYPO3_DB']->sql_num_rows($res) > 0) ) {
 			return true;
