@@ -1,5 +1,5 @@
-# cat=basic/label/101; type=text; label=LLL:EXT:content_designer/Resources/Private/Language/locallang_be.xml:extmng.sheetTitle
-sheetTitle = LLL:EXT:content_designer/Resources/Private/Language/locallang_be.xml:wizard.sheetTitle
+# cat=basic/label/101; type=text; label=LLL:EXT:content_designer/Resources/Private/Language/locallang_be.xlf:extmng.sheetTitle
+sheetTitle = LLL:EXT:content_designer/Resources/Private/Language/locallang_be.xlf:wizard.sheetTitle
 
-# cat=basic/label/101; type=boolean; label=LLL:EXT:content_designer/Resources/Private/Language/locallang_be.xml:extmng.altLabelField
-altLabelField = 0
+# cat=basic/label/101; type=boolean; label=LLL:EXT:content_designer/Resources/Private/Language/locallang_be.xlf:extmng.altLabelField
+#altLabelField = 0

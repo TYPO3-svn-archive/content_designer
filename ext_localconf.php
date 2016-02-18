@@ -3,11 +3,12 @@ if (!defined('TYPO3_MODE')) {
 	die ('Access denied.');
 }
 
+// Register base plugin
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
 	'KERN23.' . $_EXTKEY,
 	'Pi1',
 	array(
-		'ContentRenderer' => 'show',	
+		'ContentRenderer' => 'show',
 	),
 	// non-cacheable actions
 	array(
@@ -15,34 +16,23 @@ if (!defined('TYPO3_MODE')) {
 	)
 );
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('
-	mod.wizards.newContentElement.renderMode = tabs
-');
+// Form processing hook to load and modify the flexForms on rendering
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_befunc.php']['getFlexFormDSClass'][] =
+	'EXT:content_designer/Classes/Hooks/Form/FlexFormDs.php:KERN23\\ContentDesigner\\Hooks\\Form\\FlexFormDs';
 
-// Form processing hook
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_befunc.php']['getFlexFormDSClass'][] = 'EXT:content_designer/Classes/Hooks/BackendUtility.php:KERN23\\ContentDesigner\\Hooks\\BackendUtility';
-
-// pageLayout Footer Content Hook
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php']['render-preProcess'][] =
-	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'Classes/Hooks/PageRenderer.php:KERN23\\ContentDesigner\\Hooks\\PageRenderer->addJSCSS';
+// ContentRendererObject Hook for pages flexform
+$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['postInit'][] =
+	'EXT:content_designer/Classes/Hooks/ContentRendererObject.php:KERN23\\ContentDesigner\\Hooks\\ContentRendererObject';
 
 // Explicit Allow Hook
-$GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\\Backend\\Form\\DataPreprocessor'] = array(
-	'className' => 'KERN23\\ContentDesigner\\Xclass\\DataPreprocessor',
-);
-$GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\\Backend\\Form\\FormEngine'] = array(
-	'className' => 'KERN23\\ContentDesigner\\Xclass\\FormEngine',
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['formDataGroup']['tcaDatabaseRecord'][\KERN23\ContentDesigner\Backend\Form\FormDataProvider\AbstractItemProvider::class] = array(
+	'depends' => array(
+		\TYPO3\CMS\Backend\Form\FormDataProvider\AbstractItemProvider::class
+	)
 );
 
-// TSconfig Condition userFunc
-if ( !function_exists(user_cdTSconfig) ) {
-	function user_cdTSconfig($cmd) {
-		return \KERN23\ContentDesigner\Utility\ConditionMatcher::evaluateCondition($cmd);
-	}
-}
-
-// ContentRendererObject Hook
-$TYPO3_CONF_VARS['SC_OPTIONS']['tslib/class.tslib_content.php']['postInit'][] = 
-    'EXT:content_designer/Classes/Hooks/ContentRendererObject.php:KERN23\\ContentDesigner\\Hooks\\ContentRendererObject';
+// @todo test the IRRE functionality
+// @todo update the documentation
+// @todo update the README.md (for git etc)
 
 ?>

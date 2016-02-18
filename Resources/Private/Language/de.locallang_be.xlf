@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="de" datatype="plaintext" original="messages" date="2016-02-18T19:42:22Z" product-name="content_designer">
+        <header/>
+        <body>
+
+            <trans-unit id="extmng.sheetTitle">
+                <target><![CDATA[Tab-Titel für den Inhaltselement Wizard (not really needed anymore)]]></target>
+            </trans-unit>
+            <trans-unit id="extmng.altLabelField">
+                <target>Listenmodul - Label Field überschreiben Option aktivieren?</target>
+            </trans-unit>
+            <trans-unit id="extmng.enableTtContent">
+                <target>Aktivieren der Funktion um jeden CType zu erweiteren (ggf. geringere Leistung)</target>
+            </trans-unit>
+            <trans-unit id="wizard.sheetTitle">
+                <target>Sonderelemente</target>
+            </trans-unit>
+
+        </body>
+    </file>
+</xliff>

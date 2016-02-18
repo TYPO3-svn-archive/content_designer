@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" date="2016-02-18T19:42:22Z" product-name="content_designer">
+        <header/>
+        <body>
+
+            <trans-unit id="extmng.sheetTitle">
+                <source>Sheet label for the Content Element Wizard (not really needed anymore)</source>
+            </trans-unit>
+            <trans-unit id="extmng.altLabelField">
+                <source>Listmodul - Enable overwrite Option of Label Field</source>
+            </trans-unit>
+            <trans-unit id="extmng.enableTtContent">
+                <source>Enable feature to extend any CType (maybe less performance)</source>
+            </trans-unit>
+            <trans-unit id="wizard.sheetTitle">
+                <source>Custom Elements</source>
+            </trans-unit>
+
+        </body>
+    </file>
+</xliff>

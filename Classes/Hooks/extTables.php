@@ -1,10 +1,18 @@
 <?php
+
 namespace KERN23\ContentDesigner\Hooks;
+
+use \TYPO3\CMS\Core\Utility\GeneralUtility;
+use \KERN23\ContentDesigner\Service\TypoScript;
+use \TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use \KERN23\ContentDesigner\Helper\BackendCTypeItemHelper;
+use \KERN23\ContentDesigner\Helper\BackendWizardItemHelper;
+use \KERN23\ContentDesigner\Helper\GeneralHelper;
 
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2013 Hendrik Reimers <kontakt@kern23.de>
+ *  (c) 2016 Hendrik Reimers <kontakt@kern23.de>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,171 +33,157 @@ namespace KERN23\ContentDesigner\Hooks;
  ***************************************************************/
 
 /**
- * Extends dynamicly the TCA with the typoscript defined new content elements
+ * !!! THIS IS THE MAIN MAGIC !!!
  *
- * @author		Hendrik Reimers <kontakt@kern23.de>
- * @package		ContentDesigner
+ * Helper functions to extend the TCA
+ *
+ * @author	Hendrik Reimers <kontakt@kern23.de>
+ * @package	ContentDesigner
  * @subpackage	tx_contentdesigner
  */
-class extTables {
-	
-	/**
-	 * Extends the TCA CType
-	 *
-	 * @return void
-	 */
-	public static function manipulateTCA($table = 'tt_content') {
-		if ( \KERN23\ContentDesigner\Utility\Helper::compabilityCheck() != TRUE ) return FALSE;
-		
-		if ( $table == 'tt_content' ) {
-			$elements = \KERN23\ContentDesigner\Utility\TypoScript::loadConfig($config, 'tx_contentdesigner', 0, $table.'.');
-			self::renderItems($elements);
-			
-			$_extConfig = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['content_designer']);
-			if ( $_extConfig['altLabelField'] == 1 ) $GLOBALS['TCA'][$table]['ctrl']['label_userFunc'] = 'EXT:content_designer/Classes/Hooks/Label.php:KERN23\\ContentDesigner\\Hooks\\Label->getUserLabel';
-			unset($_extConfig);
-		} elseif ( $table == 'pages' ) {
-			$pageUid = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('edit');
-			$pageUid = @key($pageUid['pages']);
-			
-			$elements = \KERN23\ContentDesigner\Utility\TypoScript::loadConfig($config, 'tx_contentdesigner', $pageUid, $table.'.', true);
-			
-			self::renderPageItems($elements);
-		}
-		
-		unset($elements);
-	}
-	
-	/**
-	 * add cd Items to wizard items
-	 *
-	 * @param array $cdItems
-	 * @return void
-	 */
-	public static function renderItems(&$cdItems) {
-		// we have grid elements to add
-		if(count($cdItems)) {
-			// Get Ext. Manager Config
-			$_extConfig = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['content_designer']);
-			
-			// If TSconfig Wizard adding enabled, create the Sheet
-			$label = ( trim($_extConfig['sheetTitle']) == '' ) ? 'LLL:EXT:content_designer/Resources/Private/Language/locallang_be.xml:wizard.sheetTitle' : $_extConfig['sheetTitle'];
-			
-			\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('
-				mod.wizards.newContentElement.wizardItems.cd.header = '.$label.'
-			');
-			
-			// traverse the elements and create wizard item for each element
-			foreach($cdItems as $cdObjKey => $CTypeData) {
-				$cdObjKey = substr($cdObjKey, 0, strlen($cdObjKey)-1);
-				$CTypeData = $CTypeData['settings.'];
-				
-				// Add CType
-				self::addContentDesignerPlugin($cdObjKey, $CTypeData);
-				self::addContentDesignerItemToCType($cdObjKey, $CTypeData);
-				
-				// Add Wizard Items with TSconfig
-				self::addContentDesignerToWizard($cdObjKey, $CTypeData);
-			}
-		}
-	}
-	
-	/**
-	 * add cd Items to wizard items
-	 *
-	 * @param array $cdItems
-	 * @return void
-	 */
-	public static function renderPageItems(&$cdItems) {
-		// do we have something to add?
-		if( is_array($cdItems) && count($cdItems['tx_contentdesigner_flexform.']['settings.']['cObject.']) ) {
-			$cdItem = &$cdItems['tx_contentdesigner_flexform.']['settings.'];
-			
-			\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('pages', $cdItem['tca'], '', '');
-			
-			if ( $cdItem['cObjectFlexFile'] ) {
-				// Use a FlexForm File
-				$GLOBALS['TCA']['pages']['columns']['tx_contentdesigner_flexform']['config']['ds']['default'] = 'FILE:'.$cdItem['cObjectFlexFile'];
-			} else {
-				// Use base XML structure (the rest comes with TypoScript)
-				$GLOBALS['TCA']['pages']['columns']['tx_contentdesigner_flexform']['config']['ds']['default'] = 'FILE:EXT:content_designer/Configuration/FlexForms/defaultPages.xml';
-			}
-		}
-	}
-	
-	/**
-	 * Add CD Items to Wizard
-	 *
-	 * @param string $cdObjKey
-	 * @param array $cdItem
-	 * @return void
-	 */
-	public function addContentDesignerToWizard($cdObjKey, $cdItem) {
-		$icon  = (( strlen($cdItem['icon']) > 0 ) ? $cdItem['icon'] : \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('content_designer').'ce_wiz.gif');
-		
-		\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig('
-			 mod.wizards.newContentElement.wizardItems.cd.show := addToList('.$cdObjKey.')
- 			 mod.wizards.newContentElement.wizardItems.cd.elements {
-				'.$cdObjKey.' {
-					icon        = '.$icon.'
-					title       = '.$cdItem['title'].'
-					description = '.$cdItem['description'].'
-					params      = &defVals[tt_content][CType]='.$cdObjKey.'
-				}
-			}
-		');
-	}
-	
-	/**
-	 * add cd Items to CType
-	 *
-	 * @param string $cdObjKey
-	 * @param array $cdItem
-	 * @return void
-	 */
-	public function addContentDesignerItemToCType($cdObjKey, $cdItem, $table = 'tt_content') {
-		// Set the default TCA fields by string or automaticly copy them by other code
-		if ( !empty($cdItem['tca']) ) {
-			$GLOBALS['TCA'][$table]['types'][$cdObjKey]['showitem'] = $cdItem['tca'];
-		} else {
-			if ( !is_array($GLOBALS['TCA']['tt_content']) ) \TYPO3\CMS\Core\Utility\GeneralUtility::loadTCA('tt_content');
-			
-			$type     = ( !empty($cdItem['tcaFromType']) )         ? $cdItem['tcaFromType'] : 'header';
-			$position = ( !empty($cdItem['tcaFromTypePosition']) ) ? $cdItem['tcaFromType'] : 'after:header';
-			
-			$GLOBALS['TCA'][$table]['types'][$cdObjKey]['showitem'] = $GLOBALS['TCA']['tt_content']['types'][$type]['showitem'];
-			\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('tt_content', 'pi_flexform', $cdObjKey, $position);
-		}
-		
-		if ( $cdItem['cObjectFromPlugin'] ) {
-			// Copy FlexConf from another Plugin (must be of type "plugin" eq. list)
-			$GLOBALS['TCA'][$table]['columns']['pi_flexform']['config']['ds'][','.$cdObjKey] = $GLOBALS['TCA']['tt_content']['columns']['pi_flexform']['config']['ds'][$cdItem['cObjectFromPlugin'].',list'];
-		} elseif ( $cdItem['cObjectFlexFile'] ) {
-			// Use a FlexForm File
-			$GLOBALS['TCA'][$table]['columns']['pi_flexform']['config']['ds'][','.$cdObjKey] = 'FILE:'.$cdItem['cObjectFlexFile'];
-		} else {
-		    // Use base XML structure (the rest comes with TypoScript)
-		    $GLOBALS['TCA'][$table]['columns']['pi_flexform']['config']['ds'][','.$cdObjKey] = 'FILE:EXT:content_designer/Configuration/FlexForms/default.xml';
-		}
-	}
-	
-	/**
-	 * add cd Items as plugin
-	 *
-	 * @param string $cdObjKey
-	 * @param array $cdItem
-	 * @return void
-	 */
-	public function addContentDesignerPlugin($cdObjKey, $CTypeData) {
-		\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPlugin(
-			array(
-				\KERN23\ContentDesigner\Utility\Helper::translate($CTypeData['title']),
-				$cdObjKey,
-				(( strlen($CTypeData['iconSmall']) > 0 ) ? $CTypeData['iconSmall'] : \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('content_designer').'ext_icon.gif')
-			),
-			'CType'
-		);
-	}
+class ExtTables {
+
+    const CD_PREFIX = 'tx_contentdesigner';
+
+    /**
+     * @var null|KERN23\ContentDesigner\Helper\IconRegistry
+     */
+    private static $iconRegistry = null;
+
+    /**
+     * Renders the TSconfig to register new content elements
+     *
+     * @return void
+     */
+    public static function registerNewContentElements() {
+        // Load TS Setup Content Designer Items
+        $table = 'tt_content';
+        $items = TypoScript::loadConfig($config, self::CD_PREFIX, 0, $table . '.');
+
+// @todo: List label override hook, maybe now a signal slot event then a hook?
+//        $_extConfig = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['content_designer']);
+//        if ( $_extConfig['altLabelField'] == 1 ) $GLOBALS['TCA'][$table]['ctrl']['label_userFunc'] = 'EXT:content_designer/Classes/Hooks/Label.php:KERN23\\ContentDesigner\\Hooks\\Label->getUserLabel';
+//        unset($_extConfig);
+
+        // Render possible elements
+        unset($items['___extendCType']);
+        if ( count($items) ) {
+            if ( self::$iconRegistry == NULL ) {
+                self::$iconRegistry = GeneralUtility::makeInstance(\KERN23\ContentDesigner\Helper\IconRegistryHelper::class);
+                self::$iconRegistry->registerDefaultIcon();
+            }
+
+            BackendWizardItemHelper::setWizardSheet();
+            self::renderContentElements($items, $table);
+        }
+    }
+
+    /**
+     * Extends the ttContent CType with the Content Designer Flexform
+     *
+     * @return void
+     */
+    public static function extendTtContentTca() {
+        // Load TypoScript
+        $cdModConf = TypoScript::loadConfig($config, self::CD_PREFIX, 0);
+        if ( !is_array($cdModConf['___extendCType']) ) return;
+        $tsConf = &$cdModConf['___extendCType'];
+
+        if ( !is_array($tsConf) ) return;
+
+        // Prepare the CTypes to extend
+        foreach ( $tsConf as $CType => $conf ) {
+            $CType    = substr($CType, 0, strlen($CType) - 1);
+            $tca      = ( !empty($conf['tca']) ) ? $conf['tca'] : '--div--;LLL:EXT:frontend/Resources/Private/Language/locallang_tca.xlf:pages.tabs.extended,tx_contentdesigner_flexform';
+            $position = ( !empty($conf['tcaPosition']) ) ? $conf['tcaPosition'] : '';
+
+            ExtensionManagementUtility::addToAllTCAtypes('tt_content', $tca, $CType, $position);
+
+            // Set up default renderMethod (flexForm)
+            if ($cdItem['cObjectFlexFile']) {
+                // Use a FlexForm File
+                $GLOBALS['TCA']['tt_content']['columns'][self::CD_PREFIX . '_flexform']['config']['ds']['default'] = 'FILE:' . $cdItem['cObjectFlexFile'];
+            } else {
+                // Use base XML structure (the rest comes with TypoScript)
+                $GLOBALS['TCA']['tt_content']['columns'][self::CD_PREFIX . '_flexform']['config']['ds']['default'] = 'FILE:EXT:content_designer/Configuration/FlexForms/defaultPages.xml';
+            }
+        }
+    }
+
+    /**
+     * Extends the pages configuration the magic to modify the fields are comming in the Hooks (FlexFormDs)
+     *
+     * @return void
+     */
+    public static function extendPagesTca() {
+        // Get current page id
+        $table   = 'pages';
+        $pageUid = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('edit');
+        $pageUid = @key($pageUid[$table]);
+
+        // Load TS Setup for content designer pages
+        $pagesConfig = TypoScript::loadConfig($config, self::CD_PREFIX, $pageUid, $table . '.', TRUE);
+
+        // do we have something to add?
+        if( is_array($pagesConfig) && count($pagesConfig[self::CD_PREFIX . '_flexform']['settings.']['cObject.']) ) {
+            $cdItem = &$pagesConfig[self::CD_PREFIX . '_flexform']['settings.'];
+
+            ExtensionManagementUtility::addToAllTCAtypes('pages', $cdItem['tca']);
+
+            if ($cdItem['cObjectFlexFile']) {
+                // Use a FlexForm File
+                $GLOBALS['TCA']['pages']['columns'][self::CD_PREFIX . '_flexform']['config']['ds']['default'] = 'FILE:' . $cdItem['cObjectFlexFile'];
+            } else {
+                // Use base XML structure (the rest comes with TypoScript)
+                $GLOBALS['TCA']['pages']['columns'][self::CD_PREFIX . '_flexform']['config']['ds']['default'] = 'FILE:EXT:content_designer/Configuration/FlexForms/defaultPages.xml';
+            }
+        }
+    }
+
+
+
+    /* ************************************************************************************************************** */
+
+
+
+    /**
+     * Renders the content Elements for the Backend
+     *
+     * @param array $items
+     * @param string $table
+     */
+    private static function renderContentElements(&$items, &$table) {
+        foreach ( $items as $itemKey => $itemConfig ) {
+            BackendWizardItemHelper::addItemToWizard($itemKey, $itemConfig['settings.']);
+            BackendCTypeItemHelper::addItemToCType($itemKey, $itemConfig['settings.'], $table);
+            self::addPlugin($itemKey, $itemConfig['settings.']);
+        }
+    }
+
+    /**
+     * Registers the content element as plugin
+     *
+     * @param $newElementKey
+     * @param $newElementConfig
+     * @return void
+     */
+    private static function addPlugin($newElementKey, $newElementConfig) {
+        if ( strlen($newElementConfig['iconSmall']) > 0 ) {
+            if ( file_exists($newElementConfig['iconSmall']) ) {
+                self::$iconRegistry->registerNewIcon($newElementKey . '-iconSmall', $newElementConfig['iconSmall']);
+                $newElementConfig['iconSmall'] = $newElementKey . '-iconSmall';
+            }
+        } else $newElementConfig['iconSmall'] = 'contentdesigner-defaultSmall';
+
+        ExtensionManagementUtility::addPlugin(
+            array(
+                GeneralHelper::translate($newElementConfig['title']),
+                $newElementKey,
+                $newElementConfig['iconSmall']
+            ),
+            \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
+        );
+    }
 }
 
 ?>
