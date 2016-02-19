@@ -79,9 +79,11 @@ class BackendWizardItemHelper {
     public static function addItemToWizard(&$newElementKey, &$newElementConfig) {
         // Get the icon if its an file register new icon
         if ( strlen($newElementConfig['icon']) > 0 ) {
-            if ( file_exists($newElementConfig['icon']) ) {
+            $icon = \TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName($newElementConfig['icon']);
+
+            if ( file_exists($icon) ) {
                 if (self::$iconRegistry == NULL) self::$iconRegistry = GeneralUtility::makeInstance(\KERN23\ContentDesigner\Helper\IconRegistryHelper::class);
-                self::$iconRegistry->registerNewIcon($newElementKey . '-icon', $newElementConfig['icon']);
+                self::$iconRegistry->registerNewIcon($newElementKey . '-icon', $icon);
                 $newElementConfig['icon'] = $newElementKey . '-icon';
             }
         } else $newElementConfig['icon'] = 'contentdesigner-default';

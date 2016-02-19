@@ -57,7 +57,7 @@ class FlexFormDs {
 
         // Get the typoscript configuration object
         $typoScript = TypoScript::loadConfig($conf, substr($this->prefix, 0, strlen($this->prefix) - 1), $row['pid'], $curObjType['table'] . '.');
-        
+
         // Check whether to extend other CType's and identify the current element
         if ( !is_array($typoScript['___extendCType'][$row['CType'] . '.']) && !($curObjType) )
             return FALSE;
@@ -76,7 +76,7 @@ class FlexFormDs {
         }
 
         // Load the Field Configuration for the current selected Object
-        if ( is_array($cObject = $tsObj['cObject.']) || is_array($cObject = $tsObjAltern['cObject.']) || is_array($cObject = &$tsObjCType) ) {
+        if ( !empty($cObject = $tsObj['cObject.']) || !empty($cObject = $tsObjAltern['cObject.']) || !empty($cObject = &$tsObjCType) ) {
             unset($typoScript);
         } else return false;
 

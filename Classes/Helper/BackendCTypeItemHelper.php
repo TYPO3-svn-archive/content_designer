@@ -37,8 +37,20 @@ use \TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class BackendCTypeItemHelper {
 
+    /**
+     * @var string
+     */
     private static $prefix      = 'content_designer';
+
+    /**
+     * @var string
+     */
     private static $prefixCType = 'tx_contentdesigner_';
+
+    /**
+     * @var bool
+     */
+    private static $dividerAdded = FALSE;
 
     /**
      * Adds a content_designer item to the CType Dropdown
@@ -49,6 +61,17 @@ class BackendCTypeItemHelper {
      * @return void
      */
     public static function addItemToCType(&$newElementKey, &$newElementConfig, &$table) {
+        if ( self::$dividerAdded === FALSE ) {
+            $_extConfig = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][self::$prefix]);
+
+            $GLOBALS['TCA']['tt_content']['columns']['CType']['config']['items'][] = array(
+                $_extConfig['sheetTitle'],
+                '--div--'
+            );
+
+            self::$dividerAdded = TRUE;
+        }
+
         switch($newElementConfig['renderMethod']) {
             default:
                 self::renderByFlexForm($newElementKey, $newElementConfig, $table);
@@ -60,10 +83,6 @@ class BackendCTypeItemHelper {
 
             case 'flexFormByPlugin':
                 self::renderByFlexFormOfPlugin($newElementKey, $newElementConfig, $table);
-                break;
-
-            case 'tca':
-                self::renderByTca($newElementKey, $newElementConfig, $table);
                 break;
         }
     }
@@ -102,7 +121,7 @@ class BackendCTypeItemHelper {
         self::loadDefaultTcaLayout($newElementKey, $newElementConfig);
 
         $GLOBALS['TCA'][$table]['columns']['pi_flexform']['config']['ds'][','.$newElementKey] =
-            'FILE:'.$newElementConfig['cObject']['file'];
+            'FILE:'.$newElementConfig['cObjectFlexFile'];
     }
 
     /**
@@ -118,18 +137,6 @@ class BackendCTypeItemHelper {
 
         $GLOBALS['TCA'][$table]['columns']['pi_flexform']['config']['ds'][','.$newElementKey] =
             $GLOBALS['TCA']['tt_content']['columns']['pi_flexform']['config']['ds'][$newElementConfig['cObjectFromPlugin'].',list'];
-    }
-
-    /**
-     * Renders the element by a tca config array
-     *
-     * @param $newElementKey
-     * @param $newElementConfig
-     * @param $table
-     * @return void;
-     */
-    private static function renderByTca(&$newElementKey, &$newElementConfig, &$table) {
-        self::loadDefaultTcaLayout($newElementKey, $newElementConfig);
     }
 
 
@@ -151,13 +158,13 @@ class BackendCTypeItemHelper {
         if ( !empty($newElementConfig['tca']) ) {
             $GLOBALS['TCA'][$table]['types'][$newElementKey]['showitem'] = $newElementConfig['tca'];
         } else {
-            if ( !is_array($GLOBALS['TCA']['tt_content']) ) GeneralUtility::loadTCA('tt_content');
-
             $type     = ( !empty($newElementConfig['tcaFromType']) )         ? $newElementConfig['tcaFromType'] : 'header';
             $position = ( !empty($newElementConfig['tcaFromTypePosition']) ) ? $newElementConfig['tcaFromTypePosition'] : 'after:header';
 
             $GLOBALS['TCA'][$table]['types'][$newElementKey]['showitem'] = $GLOBALS['TCA']['tt_content']['types'][$type]['showitem'];
-            ExtensionManagementUtility::addToAllTCAtypes('tt_content', 'pi_flexform', $newElementKey, $position);
+
+            if ( !empty($newElementConfig['cObject.']) || !empty($newElementConfig['cObjectFlexFile']) || !empty($newElementConfig['cObjectFromPlugin']) )
+                ExtensionManagementUtility::addToAllTCAtypes('tt_content', 'pi_flexform', $newElementKey, $position);
         }
     }
 }

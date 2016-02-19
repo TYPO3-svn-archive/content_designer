@@ -84,7 +84,12 @@ class IconRegistryHelper {
     /* ************************************************************************************************************** */
 
 
-
+    /**
+     * Registers new icons
+     *
+     * @param $identifier
+     * @param $iconFile
+     */
     private function registerIcon($identifier, $iconFile) {
         $fileInfo = pathinfo($iconFile);
 

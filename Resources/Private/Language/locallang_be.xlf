@@ -11,10 +11,29 @@
                 <source>Listmodul - Enable overwrite Option of Label Field</source>
             </trans-unit>
             <trans-unit id="extmng.enableTtContent">
-                <source>Enable feature to extend any CType (maybe less performance)</source>
+                <source>Enable feature to extend any CType</source>
             </trans-unit>
             <trans-unit id="wizard.sheetTitle">
                 <source>Custom Elements</source>
+            </trans-unit>
+
+            <trans-unit id="google.title">
+                <source>Interactive Map</source>
+            </trans-unit>
+            <trans-unit id="google.description">
+                <source>Google Maps with point to a address</source>
+            </trans-unit>
+            <trans-unit id="google.title_static">
+                <source>Map Image</source>
+            </trans-unit>
+            <trans-unit id="google.description_static">
+                <source>Image of a Google Map Position</source>
+            </trans-unit>
+            <trans-unit id="google.street">
+                <source>Street</source>
+            </trans-unit>
+            <trans-unit id="google.city">
+                <source>City</source>
             </trans-unit>
 
         </body>

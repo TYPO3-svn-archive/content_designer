@@ -11,10 +11,29 @@
                 <target>Listenmodul - Label Field überschreiben Option aktivieren?</target>
             </trans-unit>
             <trans-unit id="extmng.enableTtContent">
-                <target>Aktivieren der Funktion um jeden CType zu erweiteren (ggf. geringere Leistung)</target>
+                <target>Aktivieren der Funktion um jeden CType zu erweiteren.</target>
             </trans-unit>
             <trans-unit id="wizard.sheetTitle">
                 <target>Sonderelemente</target>
+            </trans-unit>
+
+            <trans-unit id="google.title">
+                <target>Interaktive Karte</target>
+            </trans-unit>
+            <trans-unit id="google.description">
+                <target>Google Maps mit Adresspunkt</target>
+            </trans-unit>
+            <trans-unit id="google.title_static">
+                <target>Kartenbild</target>
+            </trans-unit>
+            <trans-unit id="google.description_static">
+                <target>Bild mit Position auf einer Google Karte</target>
+            </trans-unit>
+            <trans-unit id="google.street">
+                <target>Strasse</target>
+            </trans-unit>
+            <trans-unit id="google.city">
+                <target>Stadt</target>
             </trans-unit>
 
         </body>

@@ -67,6 +67,8 @@ class FlexForm {
             $cObjAr = $this->renderFlexFormField($conf, $flexFormData);
         }
 
+        if ( empty($cObjAr) ) $cObjAr = array();
+
         // Merge the FlexForm data to the preview
         $this->parsePreview($cObjAr, $itemContent, $row, $objType, $objArray);
     }
@@ -107,10 +109,10 @@ class FlexForm {
     private function renderFlexFormFile(&$conf, &$flexFormData) {
         $cObjAr = array();
 
-        if ( strlen($conf['cObject.']['plugin']) > 0 ) $conf['cObject.']['file'] = &$conf['cObject.']['plugin'];
+        if ( strlen($conf['cObjectFromPlugin']) > 0 ) $conf['cObjectFlexFile'] = &$conf['cObjectFromPlugin'];
 
         // Load Flexfile
-        $flexDefinition = GeneralUtility::xml2array(file_get_contents(GeneralUtility::getFileAbsFileName($conf['cObject.']['file'])));
+        $flexDefinition = GeneralUtility::xml2array(file_get_contents(GeneralUtility::getFileAbsFileName($conf['cObjectFlexFile'])));
 
         // Flexform Datei als Daten Zuweisungsvorlage nehmen
         if ( is_array($flexDefinition) && sizeof($flexDefinition) > 0 ) {

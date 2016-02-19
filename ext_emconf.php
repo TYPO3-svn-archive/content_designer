@@ -2,7 +2,7 @@
 
 $EM_CONF[$_EXTKEY] = array (
 	'title' => 'Content Designer',
-	'description' => 'Quick and easy create new Content Elements, page properties, or just disable Drag and Drop of Elements. Just with TypoScript or Flexforms. Useful examples, like google maps, youtube, etc already included.',
+	'description' => 'Easy way to create new Content Elements, or extend any CType and page properties. Just with TypoScript! Useful examples, and predefined Elements like Google Maps already included.',
 	'category' => 'plugin',
 	'version' => '3.0.0',
 	'state' => 'beta',
