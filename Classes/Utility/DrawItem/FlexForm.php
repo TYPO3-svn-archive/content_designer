@@ -150,7 +150,15 @@ class FlexForm {
         $itemContent = TypoScript::parseTypoScriptObj($objType, $objArray, $cObj);
 
         // Reset
-        $cObj->start($data, 'tt_content'); // Reset des CURRENT Wert damit die Content ID wieder eingefuegt werden kann
+        $cObj->start($row, 'tt_content'); // Reset des CURRENT Wert damit die Content ID wieder eingefuegt werden kann
+
+        // Initializing of TypoScript overrides the backend backPath... so we need to set it back for the backend
+        $pageRenderer = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
+        $backPath     = TYPO3_MODE === 'BE' ? $GLOBALS['BACK_PATH'] : ''; # same way as done in: \TYPO3\CMS\Core\Resource\ResourceCompresso->setInitialBackPath()
+        $pageRenderer->setBackPath($backPath);
+
+        // free memory
+        unset($cObj, $pageRenderer, $backPath);
     }
 }
 

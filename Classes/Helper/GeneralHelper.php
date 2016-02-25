@@ -2,6 +2,8 @@
 
 namespace KERN23\ContentDesigner\Helper;
 
+use \TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /***************************************************************
  *  Copyright notice
  *
@@ -45,6 +47,21 @@ class GeneralHelper {
         if ( preg_match("/^LLL:(.*)$/",$string) && ($GLOBALS['LANG']) ) {
             return $GLOBALS['LANG']->sL($string);
         } else return $string;
+    }
+
+    /**
+     * Checks if the current module is accepted to perform the magic with typoscript
+     * For example the installTool doesn't like it.
+     *
+     * @return bool
+     */
+    public static function isModuleAcceptable() {
+        // don't run in install tool
+        $installToolVar = @GeneralUtility::_GP('install');
+        if ( is_array($installToolVar) && ($installToolVar['extensionCompatibilityTester']['forceCheck'] == 1) ) return FALSE;
+
+        // Not available in Permission Module
+        #if ( @\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('M') == 'web_perm' ) return FALSE;
     }
 }
 
