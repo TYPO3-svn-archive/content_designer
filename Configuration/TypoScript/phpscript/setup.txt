@@ -1,0 +1,32 @@
+tt_content.tx_contentdesigner_phpscript < plugin.tx_contentdesigner
+tt_content.tx_contentdesigner_phpscript.settings {
+  title = PHP Script
+  description = Includes an external PHP Script
+  
+  cObject.sDEF.sheetTitle = Allgemein
+  cObject.sDEF.el.phpscript {
+    label = Relative path to PHP Script
+    config.type = input
+    config.eval = trim,required
+  }
+    
+  previewObj = TEXT
+  previewObj.field = phpscript
+  previewObj.wrap  = |<br>
+  
+  renderObj = COA_INT
+  renderObj {
+    20 = LOAD_REGISTER
+    20.script.field = phpscript
+    
+    30 = USER
+    30.includeLibs = EXT:content_designer/Resources/Private/User/includePhpScript.php
+    30.userFunc = contentdesigner_includescript->main
+    
+    30.includeScript = TEXT
+    30.includeScript.value = {register:script}
+    30.includeScript.insertData = 1
+    
+    40 = RESTORE_REGISTER
+  }
+}
