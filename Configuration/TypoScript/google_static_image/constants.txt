@@ -1,0 +1,1 @@
+tt_content.tx_contentdesigner_googleStaticImage.color = 78A80B

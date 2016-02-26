@@ -1,0 +1,98 @@
+lib.googleStaticImage = IMAGE
+lib.googleStaticImage {
+  params = class="img-responsive img-map"
+
+  file.import.stdWrap.cObject = USER
+  file.import.stdWrap.cObject {
+    includeLibs = EXT:content_designer/Resources/Private/User/user_getextimage.class.php
+    userFunc    = user_getExtImage->main
+
+    url = TEMPLATE
+    url {
+      template       = TEXT
+      template.value = http://maps.google.com/maps/api/staticmap?center=###STREET###,###CITY###&zoom=15&size=###EXT_WIDTH###x###EXT_HEIGHT###&maptype=roadmap&markers=color:red||###STREET###,###CITY###&sensor=false&style=
+      template.wrap  = |hue:0x{$plugin.tx_bnwa_list.settings.mapColor}
+
+      marks {
+        STREET = TEXT
+        STREET.field = street
+        STREET.wrap = |
+        STREET.rawUrlEncode = 1
+
+        CITY < .STREET
+        CITY.field = city
+
+        EXT_WIDTH = TEXT
+        EXT_WIDTH.value = 800
+        EXT_WIDTH.override.field = extImgWidth
+        EXT_WIDTH.override.if.isTrue.field = extImgWidth
+
+        EXT_HEIGHT < .EXT_WIDTH
+        EXT_HEIGHT.value = 450
+        EXT_HEIGHT.override.field = extImgHeight
+        EXT_HEIGHT.override.if.isTrue.field = extImgHeight
+      }
+    }
+
+    targetPath = uploads/tx_contentdesigner/
+    fileExt    = jpg
+
+    filename          = TEXT
+    filename.value    = google_map_static
+    filename.dataWrap = |_{field:uid}
+
+    cacheTimeout = 86400
+
+
+  }
+
+  file.width = {$styles.content.imgtext.maxW}
+  file.width.override.field = width
+  file.width.override.if.isTrue.field = width
+
+  imageLinkWrap = 1
+  imageLinkWrap.enable = 1
+  imageLinkWrap.typolink {
+    parameter.cObject < lib.googleStaticImage.file.import.stdWrap.cObject
+    ATagParams = class="lightbox" rel="lightbox[{field:uid}]"
+    ATagParams.insertData = 1
+  }
+}
+
+
+
+tt_content.tx_contentdesigner_googleStaticImage < plugin.tx_contentdesigner
+tt_content.tx_contentdesigner_googleStaticImage.settings {
+  title = LLL:EXT:content_designer/Resources/Private/Language/locallang_be.xlf:google.title_static
+  description = LLL:EXT:content_designer/Resources/Private/Language/locallang_be.xlf:google.description_static
+
+  icon = EXT:content_designer/Resources/Public/Icons/GoogleStaticImage/ce_wiz.gif
+
+  previewObj = COA
+  previewObj {
+    20 = TEXT
+    20.value = {field:street}, {field:city}
+    20.insertData = 1
+    20.wrap = <p>|</p>
+  }
+
+  cObject {
+    sDEF {
+      sheetTitle = LLL:EXT:content_designer/Resources/Private/Language/locallang_be.xlf:wizard.sheetTitle
+
+      el {
+        street {
+          label = LLL:EXT:content_designer/Resources/Private/Language/locallang_be.xlf:google.street
+          config.type = input
+        }
+
+        city {
+          label = LLL:EXT:content_designer/Resources/Private/Language/locallang_be.xlf:google.city
+          config.type = input
+        }
+      }
+    }
+  }
+
+  renderObj.20 < lib.googleStaticImage
+}
